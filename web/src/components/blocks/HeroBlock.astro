@@ -1,0 +1,137 @@
+---
+import type { HeroBlock as HeroBlockType, Media } from '../../types/cms'
+import { getMediaUrl } from '../../lib/cms'
+
+interface Props {
+  block: HeroBlockType
+}
+
+const { block } = Astro.props
+const { tagline, heading, description, button, images } = block
+
+const allImages = images ?? []
+// Left collage: first 2 images  |  Right collage: next 3
+const left = allImages.slice(0, 2)
+const right = allImages.slice(2, 5)
+
+const imgUrl = (image: number | Media) => getMediaUrl(image)
+const imgAlt = (image: number | Media) =>
+  typeof image === 'object' ? (image.alt ?? '') : ''
+---
+
+<!-- Exact values from Figma node 953:4905 -->
+<section
+  class="bg-white border border-[#cacaca] rounded-[30px] py-20 flex items-center justify-center gap-[37px] w-full"
+>
+  <!-- ─── Left collage ──────────────────────────────────────────────── -->
+  <!-- CSS grid trick: all items placed at col-1/row-1, offset via margin -->
+  <div
+    class="inline-grid [grid-template-columns:max-content] [grid-template-rows:max-content] leading-[0] place-items-start shrink-0"
+  >
+    {left[0] && (
+      <div class="col-start-1 row-start-1 w-[205px] h-[280px] border-[6px] border-white rounded-[10px] overflow-hidden">
+        <img
+          src={imgUrl(left[0].image)}
+          alt={imgAlt(left[0].image)}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
+    {left[1] && (
+      <div class="col-start-1 row-start-1 ml-[184px] mt-[235px] w-[249px] h-[341px] border-[6px] border-white rounded-[10px] overflow-hidden">
+        <img
+          src={imgUrl(left[1].image)}
+          alt={imgAlt(left[1].image)}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
+  </div>
+
+  <!-- ─── Center content ───────────────────────────────────────────── -->
+  <div class="w-[614px] flex flex-col items-center">
+
+    <!-- Google G logo — static brand trust signal -->
+    <div class="pb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="56" height="56" aria-hidden="true">
+        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 19.001 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a11.966 11.966 0 0 1-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+      </svg>
+    </div>
+
+    <!-- Tagline — 18px Medium (Figma: fonts/title-font, font-weights/medium) -->
+    <p class="w-full text-[18px] font-medium text-black text-center leading-none pb-[10px]">
+      {tagline}
+    </p>
+
+    <!-- H1 — 48px Bold (Figma: fonts/title-font, font-weights/bold) -->
+    <h1 class="w-full text-[48px] font-bold text-black text-center leading-none pb-[20px]">
+      {heading}
+    </h1>
+
+    <!-- Description — 16px Regular, #797979, lineHeight 1.6 -->
+    <p class="w-full text-[16px] font-normal text-[#797979] text-center leading-[1.6] pb-[20px]">
+      {description}
+    </p>
+
+    <!-- CTA Button — 63px tall, black bg, 10px radius, 25px h-padding -->
+    <a
+      href={button.link}
+      class="flex items-center gap-[15px] bg-black border-2 border-black text-white px-[25px] rounded-[10px] h-[63px] no-underline hover:bg-neutral-800 transition-colors"
+    >
+      <!-- Chat/assessment icon — matches Figma vector shape -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="white"
+        aria-hidden="true"
+      >
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+      </svg>
+      <span class="text-[16px] font-bold whitespace-nowrap">{button.label}</span>
+    </a>
+
+  </div>
+
+  <!-- ─── Right collage ─────────────────────────────────────────────── -->
+  <div
+    class="inline-grid [grid-template-columns:max-content] [grid-template-rows:max-content] leading-[0] place-items-start shrink-0"
+  >
+    {right[0] && (
+      <div class="col-start-1 row-start-1 w-[138px] h-[188px] mt-[78px] border-[6px] border-white rounded-[10px] overflow-hidden">
+        <img
+          src={imgUrl(right[0].image)}
+          alt={imgAlt(right[0].image)}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
+    {right[1] && (
+      <div class="col-start-1 row-start-1 ml-[320px] w-[113px] h-[154px] border-[6px] border-white rounded-[10px] overflow-hidden">
+        <img
+          src={imgUrl(right[1].image)}
+          alt={imgAlt(right[1].image)}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
+    {right[2] && (
+      <div class="col-start-1 row-start-1 ml-[95px] mt-[234px] w-[274px] h-[374px] border-[6px] border-white rounded-[10px] overflow-hidden">
+        <img
+          src={imgUrl(right[2].image)}
+          alt={imgAlt(right[2].image)}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
+  </div>
+</section>

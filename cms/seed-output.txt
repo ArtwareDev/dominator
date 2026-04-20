@@ -1,0 +1,4 @@
+
+> payload
+> cross-env NODE_OPTIONS=--no-deprecation payload run src/seed.ts
+

@@ -7,3 +7,4 @@ media/
 dist/
 .astro/
 Dockerfile
+docker-compose.yml
